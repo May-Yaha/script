@@ -39,7 +39,7 @@ function totdir($dirname)
 }
 
 //删除文件
-function deldir($dirname)
+function deldir($dirname,$logname)
 {
     //删除目录下的文件：
     $dh = opendir($dirname);
@@ -56,14 +56,23 @@ function deldir($dirname)
         }
     }
     closedir($dh);
-    echo "delete file sesssus!";
+    $logcenter = date("Y-m-d H:i:s") . " delete susses!". PHP_EOL;
+    logs($logname,$logcenter);
+}
+
+//写日志
+function logs($logname, $logcenter)
+{
+    file_put_contents($logname, $logcenter, FILE_APPEND);
 }
 
 $dirname = "data";
+$logname = "logs\delfile.log";
 listdir($dirname);
 
 if (totdir($dirname) >= 10240000) {
-    deldir($dirname);
+    deldir($dirname,$logname);
 } else {
-    echo "当前" . $dirname . "大小为：" . round(totdir($dirname) / 1048576, 2) . "MB";
+    $logcenter = date("Y-m-d H:i:s") . " " . "filename:" . $dirname . "  size：" . round(totdir($dirname) / 1048576, 2) . "MB" . PHP_EOL;
+    logs($logname, $logcenter);
 }
